@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, ChangeEvent, useState } from "react";
+import React, { SyntheticEvent, useState, useRef } from "react";
 import Button from "../UI/Button/Button";
 import Card from "../UI/Card/Card";
 import ErrorModal, { ModalError } from "../UI/Modal/ErrorModal";
@@ -14,13 +14,15 @@ const AddUser = (props: Props) => {
     title: "",
     message: "",
   };
-  const [username, setUsername] = useState<string>("");
-  const [age, setAge] = useState<string>("");
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const ageInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<ModalError>(errorDefault);
 
   const addUserHandler = (event: SyntheticEvent) => {
     event.preventDefault();
-    if (username.trim().length === 0 || age.trim().length === 0) {
+    const enteredName = nameInputRef.current?.value || "";
+    const enteredAge = ageInputRef.current?.value || "";
+    if (enteredName?.trim().length === 0 || enteredAge?.trim().length === 0) {
       setError((preState: ModalError) => {
         return {
           ...preState,
@@ -31,7 +33,7 @@ const AddUser = (props: Props) => {
       return;
     }
 
-    if (+age < 1) {
+    if (+enteredAge < 1) {
       setError((preState: ModalError) => {
         return {
           ...preState,
@@ -43,55 +45,34 @@ const AddUser = (props: Props) => {
     }
     const userValue: User = {
       id: Math.random().toString(),
-      name: username,
-      age: +age,
+      name: enteredName,
+      age: +enteredAge,
     };
 
     props.onAddUser(userValue);
-
-    setUsername("");
-    setAge("");
-  };
-
-  const handlerChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
-
-  const handlerChangeAge = (event: ChangeEvent<HTMLInputElement>) => {
-    setAge(event.target.value);
   };
 
   const handleSubmitModal = () => {
     setError((preState: ModalError) => {
       return {
         ...preState,
-        ...errorDefault
+        ...errorDefault,
       };
     });
-  }
+  };
 
   return (
     <div>
       {error.title !== "" && error.message !== "" && (
-        <ErrorModal modalError={error} onSubmit={handleSubmitModal}/>
+        <ErrorModal modalError={error} onSubmit={handleSubmitModal} />
       )}
       ;
       <Card className="card-user">
         <form onSubmit={addUserHandler}>
           <label htmlFor="username">UserName:</label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={handlerChangeName}
-          />
+          <input id="username" type="text" ref={nameInputRef} />
           <label htmlFor="age">Age (years):</label>
-          <input
-            id="age"
-            type="number"
-            value={age}
-            onChange={handlerChangeAge}
-          />
+          <input id="age" type="number" ref={ageInputRef} />
           <Button type="submit">Add user</Button>
         </form>
       </Card>
