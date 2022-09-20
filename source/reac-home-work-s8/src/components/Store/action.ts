@@ -9,14 +9,13 @@ import {
   DELETE_USER,
 } from "./constants";
 
-export const loginAccount = (payload: string) => ({
+export const login = (payload: string) => ({
   type: LOGIN,
   payload,
 });
 
-export const logout = (payload: string) => ({
-  type: LOGOUT,
-  payload,
+export const logout = () => ({
+  type: LOGOUT
 });
 
 export const register = (payload: string) => ({

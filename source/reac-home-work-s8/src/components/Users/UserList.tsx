@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Card from "../UI/Card/Card";
 import { User } from "./User";
 import "./UserList.css";

@@ -6,27 +6,22 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { login } from "../Store/action";
+import { useNavigate } from "react-router-dom";
+import { login, register } from "../Store/action";
 import myContext from "../Store/context";
 import Button from "../UI/Button/Button";
 import Card from "../UI/Card/Card";
 import Input from "../UI/Input/Input";
 import { Profile } from "./profile";
 
-const Login = () => {
+const Register = () => {
   const url = `http://localhost:3000/profile`;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
   const [state, dispatch] = useContext(myContext);
   const navigate = useNavigate();
   const { isAuthenticate } = state;
-
-  const styleLogin = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  }
 
   useEffect(() => {
     if (isAuthenticate) {
@@ -34,20 +29,17 @@ const Login = () => {
     }
   }, [isAuthenticate]);
 
-  const handleSubmitLogin = (e: SyntheticEvent) => {
+  const handleSubmitRegister = (e: SyntheticEvent) => {
     e.preventDefault();
+    const profile: Profile = {
+      id: Math.random().toString(),
+      email,
+      password,
+    };
     axios
-      .get(url)
+      .post(url, profile)
       .then((res) => {
-        const isLoginSuccess = res.data.find((profile: Profile) => {
-          return profile.email === email && profile.password === password;
-        });
-
-        if (isLoginSuccess) {
-          dispatch(login(email));
-        } else {
-          alert("Login failed");
-        }
+        dispatch(register(email));
       })
       .catch((err: any) => console.log(err));
   };
@@ -59,9 +51,13 @@ const Login = () => {
   const handleChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
+
+  const handleChangeRePassword = (event: ChangeEvent<HTMLInputElement>) => {
+    setRePassword(event.target.value);
+  };
   return (
     <Card className="card-user">
-      <form onSubmit={handleSubmitLogin}>
+      <form onSubmit={handleSubmitRegister}>
         <Input
           id="Email"
           label="Email:"
@@ -76,15 +72,17 @@ const Login = () => {
           onChange={handleChangePassword}
           value={password}
         />
-        <div style={styleLogin}>
-          <Button type="submit">Login</Button>
-          <NavLink to={`/register`}>
-            <span>register</span>
-          </NavLink>
-        </div>
+        <Input
+          id="rePassword"
+          label="Eetype Password:"
+          type="password"
+          onChange={handleChangeRePassword}
+          value={rePassword}
+        />
+        <Button type="submit">Register</Button>
       </form>
     </Card>
   );
 };
 
-export default Login;
+export default Register;
