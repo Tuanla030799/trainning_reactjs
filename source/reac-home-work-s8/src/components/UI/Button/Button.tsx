@@ -5,6 +5,7 @@ type Props = {
   type?: "submit" | "reset" | "button";
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   className?: string;
+  value? : string
 };
 
 const Button = (props: Props) => {
@@ -13,6 +14,7 @@ const Button = (props: Props) => {
       className={`button ${props.className}`}
       type={props.type || "button"}
       onClick={props.onClick}
+      value={props.value}
     >
       {props.children}
     </button>

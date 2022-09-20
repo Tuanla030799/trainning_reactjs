@@ -1,0 +1,28 @@
+.card-user {
+  margin: 2rem auto;
+  padding: 1rem;
+  width: 90%;
+  max-width: 40rem;
+}
+
+.card-user label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.card-user input {
+  font: inherit;
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  padding: 0.25rem 0.5rem;
+  box-sizing: border-box;
+}
+
+.card-user input:focus {
+  outline: none;
+  border-color: #4f005f;
+}
