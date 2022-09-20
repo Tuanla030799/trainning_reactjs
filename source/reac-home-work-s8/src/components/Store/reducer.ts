@@ -19,15 +19,16 @@ type State = {
   isAuthenticate: boolean;
 };
 
+const token = localStorage.getItem('token');
+
 const initState = {
   users: [],
-  isAuthenticate: false,
+  isAuthenticate: token ? true : false,
 };
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
     case LOGIN:
-      console.log("first")
       localStorage.setItem('token', action.payload);
       return {
         ...state,
@@ -40,6 +41,7 @@ function reducer(state: State, action: Action) {
         isAuthenticate: true,
       };
     case LOGOUT:
+      localStorage.removeItem('token');
       return {
         ...state,
         isAuthenticate: false,

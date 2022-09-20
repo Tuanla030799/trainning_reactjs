@@ -5,10 +5,13 @@ import AddUser from "./components/Users/AddUser";
 import UserList from "./components/Users/UserList";
 import Login from "./components/Auth/Login";
 import EditUser from "./components/Users/EditUser";
+import Header from "./components/UI/Header/Header";
+import Register from "./components/Auth/Register";
 
 function App() {
   return (
     <div className="App">
+      <Header />
       <Routes>
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<UserList />} />
@@ -16,6 +19,7 @@ function App() {
           <Route path="/user/:userId" element={<EditUser />} />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
   );
