@@ -3,42 +3,53 @@ import React, {
   useState,
   useRef,
   useContext,
+  useEffect,
   ChangeEvent,
 } from "react";
 import myContext from "../Store/context";
 import Button from "../UI/Button/Button";
 import Card from "../UI/Card/Card";
 import ErrorModal, { ModalError } from "../UI/Modal/ErrorModal";
-import "./AddUser.css";
+import "./EditUser.css";
 import { User } from "./User";
 import axios from "axios";
-import { addUser } from "../Store/action";
-import { useNavigate } from "react-router-dom";
+import { editUser } from "../Store/action";
+import { useParams,useNavigate } from "react-router-dom";
 import Input from "../UI/Input/Input";
 
-const AddUser = () => {
+const EditUser = () => {
   const [state, dispatch] = useContext(myContext);
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const { userId } = useParams();
   const navigate = useNavigate();
-
-  const postUser = (user: User) => {
-    const url = ` http://localhost:3000/users`;
-    axios
-      .post(url, user)
-      .then((res) => {
-        dispatch(addUser(res.data));
-      })
-      .catch((err: any) => console.log(err));
-  };
-
   const errorDefault: ModalError = {
     title: "",
     message: "",
   };
-  const nameInputRef = useRef<HTMLInputElement>(null);
-  const ageInputRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
   const [error, setError] = useState<ModalError>(errorDefault);
+  const url = ` http://localhost:3000/users`;
+
+  useEffect(() => {
+    axios
+      .get(`${url}/${userId}`)
+      .then((res) => {
+        const user = res.data;
+        setName(user.name);
+        setAge(user.age);
+      })
+      .catch((err: any) => console.log(err));
+  }, [dispatch]);
+
+  const putUser = (user: User) => {
+    axios
+      .put(`${url}/${userId}`, user)
+      .then((res) => {
+        dispatch(editUser(res.data));
+        navigate("/");
+      })
+      .catch((err: any) => console.log(err));
+  };
 
   const addUserHandler = (event: SyntheticEvent) => {
     event.preventDefault();
@@ -68,9 +79,7 @@ const AddUser = () => {
       name: name,
       age: +age,
     };
-
-    postUser(userValue);
-    navigate("/");
+    putUser(userValue);
   };
 
   const handleSubmitModal = () => {
@@ -98,27 +107,25 @@ const AddUser = () => {
       ;
       <Card className="card-user">
         <form onSubmit={addUserHandler}>
+          <label htmlFor="username">UserName:</label>
           <Input
             id="username"
-            label="Use Name:"
             type="text"
-            ref={nameInputRef}
             onChange={handleChangeName}
             value={name}
           />
+          <label htmlFor="age">Age (years):</label>
           <Input
             id="age"
-            label="Age (years):"
             type="number"
-            ref={ageInputRef}
             onChange={handleChangeAge}
             value={age}
           />
-          <Button type="submit">Add user</Button>
+          <Button type="submit">Edit user</Button>
         </form>
       </Card>
     </div>
   );
 };
 
-export default AddUser;
+export default EditUser;
